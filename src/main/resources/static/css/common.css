@@ -1,0 +1,66 @@
+
+#navbarId {
+    font-size: medium;
+    font-style: unset;
+    font-family: cursive;
+    font-weight: bold;
+}
+
+div#navbarId ul li {
+    border: 2px;
+    border-radius: 20px;
+    border-style: outset;
+    margin: 3px;
+    border-color: red;
+}
+
+div#navbarId ul li:hover a {
+    background: white;
+    border-radius:20px;
+}
+
+
+#navRightInnerId {
+    font-size: medium;
+    font-style: revert;
+    font-family: revert;
+    background: powderblue;
+    width: 290px;
+    border-radius:20px;
+}
+
+.contentClass{
+    margin-top: 50px;
+    font-family: cursive;
+    font-weight: bolder;
+    font-size: medium;
+}
+
+
+.btn-create {
+    background: #6abadeba;
+    border: 2px;
+    border-color: red;
+    border-style: outset;
+    border-radius: 20px;
+    cursor: pointer;
+
+}
+
+.btn-create:hover {
+    background-color: white;
+}
+
+.editbtn {
+    margin-left: 10px;
+    background: #6abadeba;
+    border: 2px;
+    border-color: red;
+    border-style: outset;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.editbtn:hover {
+    background-color: white;
+}

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:ht="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="fragments/common :: headerfiles"></th:block>
+    <style>
+        input:required:invalid{
+            border: 1px solid #ff0000;
+        }
+        select:invalid{
+            border: 1px solid #ff0000;
+        }
+        .userModalContent{
+            border-radius: 50px;
+            background-color: skyblue;
+        }
+
+
+    </style>
+</head>
+<body>
+    <header th:insert="fragments/common :: header"></header>
+    <div class="container-fluid contentClass" style="padding-left: 30px;padding-right: 30px">
+        <div class="row">
+                <button class="btn-create" th:onclick="createUser(0)">
+                    <i class="fa fa-plus-circle m-r-7"></i> Create User
+                </button>
+            <table id="user_table_id" class="table table-striped table-bordered table-hover table-responsive">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Is Active</th>
+                    <th>Email</th>
+                    <th>Annual Leave</th>
+                    <th>Medical Leave</th>
+                    <th>Unpaid Leave</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user:${userList}">
+                    <td><span th:text="${user.username}"></span></td>
+                    <td><span th:text="${user.active}"></span></td>
+                    <td><span th:text="${user.email}"></span></td>
+                    <td><span th:text="${user.annualLeaveNo}"></span></td>
+                    <td><span th:text="${user.medicalLeaveNo}"></span></td>
+                    <td><span th:text="${user.unpaidLeaveNo}"></span></td>
+                    <td>
+                        <button class="editbtn" th:onclick="'showConfirm()'">Delete</button>
+                        <button class="editbtn" th:onclick="'editUser(\''+${user.id}+'\')'">Edit</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="create-user-modal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog_body modal-lg" role="document">
+            <div class="modal-content userModalContent">
+                <div class="modal-body">
+                        <form id="userForm" action="#" th:action="@{/admin/create}" method="post"  th:object="${userDTO}" autocomplete="off">
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    <!-- id field -->
+                                    <div class="form-group row" style="display: none">
+                                        <label for="id" class="col-sm-2 col-form-label ">Id</label>
+                                        <div class="col-sm-10 text-center">
+                                            <input type="text" class="form-control" id="id" th:field="*{id}">
+                                        </div>
+                                    </div>
+                                    <!-- active field -->
+                                    <div class="form-group row" style="display: none">
+                                        <label for="active" class="col-sm-2 col-form-label ">Active</label>
+                                        <div class="col-sm-10 text-center">
+                                            <input type="text" class="form-control" id="active" th:field="*{active}">
+                                        </div>
+                                    </div>
+                                    <!--user name field -->
+                                    <div class="form-group row">
+                                        <label for="username" class="col-sm-4 col-form-label ">Name</label>
+                                        <div class="col-sm-8 text-left input-group">
+                                            <input type="text" class="form-control validate" required id="username" th:field="*{username}">
+                                            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+                                                  class="text-danger">Error</span>
+                                        </div>
+                                    </div>
+                                    <!-- email -->
+                                    <div class="form-group row">
+                                        <label for="email" class="col-sm-4 col-form-label ">Email</label>
+                                        <div class="col-sm-8 text-left input-group">
+                                            <input type="text" class="form-control validate" required id="email" th:field="*{email}">
+                                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                                                  class="text-danger">Error</span>
+                                        </div>
+                                    </div>
+                                    <!--password -->
+                                    <div class="form-group row userPasswordDIV">
+                                        <label for="password" class="col-sm-4 col-form-label ">Password</label>
+                                        <div class="col-sm-8 text-left input-group">
+                                            <input type="password" class="form-control validate" required id="password" th:field="*{password}">
+                                            <div class="input-group-addon" onclick="showPassword()"><span class="glyphicon glyphicon-eye-open"></span></div>
+                                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                                                  class="text-danger">Error</span>
+                                        </div>
+                                    </div>
+                                    <!-- annual leave number -->
+                                    <div class="form-group row">
+                                        <label for="annualleave" class="col-sm-4 col-form-label ">Annual Leave</label>
+                                        <div class="col-sm-8 text-left input-group">
+                                            <input type="text" class="form-control validate" required id="annualleave" th:field="*{annualLeaveNo}"
+                                                   onkeypress="return (event.charCode != 8 && event.charCode == 0 || (event.charCode >= 48 && event.charCode<=57))"
+                                            >
+                                            <span th:if="${#fields.hasErrors('annualLeaveNo')}" th:errors="*{annualLeaveNo}"
+                                                  class="text-danger">Error</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- medical leave number -->
+                                    <div class="form-group row">
+                                        <label for="medicalleave" class="col-sm-4 col-form-label">Medical Leave</label>
+                                        <div class="col-sm-8 text-left input-group">
+                                            <input type="text" class="form-control validate" required id="medicalleave" th:field="*{medicalLeaveNo}" onkeypress="return (event.charCode != 8 && event.charCode == 0 || (event.charCode >= 48 && event.charCode<=57))">
+                                            <span th:if="${#fields.hasErrors('medicalLeaveNo')}" th:errors="*{medicalLeaveNo}"
+                                                  class="text-danger">Error</span>
+                                        </div>
+                                    </div>
+                                    <!-- unpaid leave number -->
+                                    <div class="form-group row">
+                                        <label for="unpaidleave" class="col-sm-4 col-form-label ">Unpaid Leave</label>
+                                        <div class="col-sm-8 text-left input-group">
+                                            <input type="text" class="form-control validate" required id="unpaidleave" th:field="*{unpaidLeaveNo}" onkeypress="return (event.charCode != 8 && event.charCode == 0 || (event.charCode >= 48 && event.charCode<=57))">
+                                            <span th:if="${#fields.hasErrors('unpaidLeaveNo')}" th:errors="*{unpaidLeaveNo}"
+                                                  class="text-danger">Error</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- role list -->
+                                    <div class="form-group row">
+                                        <label  class="col-sm-4 col-form-label ">Role</label>
+                                        <div class="col-sm-8 text-left input-group">
+                                            <select th:field="*{roles}" id="roleList" class="form-control role-multi-select validate" required multiple>
+                                                <option th:each="role : ${T(com.leave.system.user.enums.RoleEnum).values()}"
+                                                        th:value="${role}"
+                                                        th:text="${role}"
+                                                >
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Cancel and Submit button -->
+                                    <div class="form-group row">
+                                        <div class="col-md-4"></div>
+                                        <button class="btn btn-secondary col-md-4"
+                                                data-dismiss="modal" type="reset">
+                                            Cancel
+                                        </button>
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-primary btn-block" onclick="submitUserModal()">Submit</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+    $(document).ready(function () {
+        prepareUserDataTable();
+        prepareMultiSelectInModal();
+
+    });
+
+    function createUser(id) {
+        isDisableLeaves(false)
+        clearUserModalValues();
+        prepareInputTypePassword();
+        $('#active').val(true);
+        $('#id').val(id)
+        showUserModal();
+    }
+    function  editUser(userId) {
+        clearUserModalValues();
+        let basePath = $('meta[charset="utf-8"]').attr('href');
+        let editUrl = basePath+"admin/user/";
+        let url = basePath + editUrl.replace(basePath,"");
+        $.ajax(
+            {
+                type:'GET',
+                contentType:'application/json',
+                url:url+userId,
+                dataType:'json',
+                cache:false,
+                timeout:3000 ,
+                success:function (data) {
+                    isDisableLeaves(true)
+                    prepareUserWithJsonData(data);
+                    updateMultiselectWithJsonData(data);
+                    showUserModal();
+                },
+                error: function(xhr, status, error) {
+                    console.log(status)
+                    console.error(error)
+                }
+            }
+        )
+
+    }
+    function showPassword() {
+                console.log("show password")
+                let passType = $('#password').attr('type');
+                if (passType === 'password'){
+                    $('#password').attr('type','text');
+                }else {
+                    $('#password').attr('type','password');
+                }
+    }
+    function deselectAllMultiSelectOptions() {
+        /* get all intialized options */
+        let options = $('#roleList option');
+        /* deselect all intialized options */
+        options.each(function () {
+            $(this).removeAttr('selected').prop('selected', false);
+        });
+        $('.role-multi-select').multiselect('refresh'); // we need to refresh  multiselect
+        /* end of deselect all intialized options */
+    }
+    function prepareInputTypePassword() {
+        // prepare  input type password
+        if ($('#password').attr('type') === 'text'){
+            $('#password').attr('type','password');
+        }
+    }
+    function showUserModal() {
+        $('#create-user-modal').modal({show:true})
+    }
+    function hideUserModal() {
+        $('#create-user-modal').modal("hide")
+    }
+    function prepareMultiSelectInModal() {
+        // for multi select
+        $('.role-multi-select').multiselect({
+            buttonWidth: '100%',
+            enableCaseInsensitiveFiltering: true,
+            includeSelectAllOption: true
+        });
+        $('.caret').css('float','right');
+        $(".caret").css('margin', '8px 0');
+    }
+    function prepareUserDataTable() {
+        // for user datatable
+        var table= $('#user_table_id').DataTable({
+            lengthChange: false
+        });
+    }
+    function updateMultiselectWithJsonData(data) {
+        console.log("***** update multi select with json data ***********")
+        /* get all intialized options */
+        let options = $('#roleList option');
+        /* update options with axaj json data to be selected */
+        options.each(function () {
+            if (data.roles.includes($(this).val())){
+                $(this).prop("selected", true);
+            }
+        })
+        $('.role-multi-select').multiselect( 'refresh' );// we need to refresh  multiselect
+        /* end update options with axaj json data to be selected */
+    }
+    function isDisableLeaves(isDisabled) {
+        $('#annualleave').prop("disabled",isDisabled)
+        $('#medicalleave').prop("disabled",isDisabled)
+        $('#unpaidleave').prop("disabled",isDisabled)
+    }
+    function prepareUserWithJsonData(data) {
+        console.log("***** prepare user with json data ***********")
+        $('#id').val(data.id);
+        $('#username').val(data.username);
+        $('#email').val(data.email);
+        $('#password').val('#####')
+        $('.userPasswordDIV').css("display","none")
+        $('#annualleave').val(data.annualLeaveNo);
+        $('#medicalleave').val(data.medicalLeaveNo);
+        $('#unpaidleave').val(data.unpaidLeaveNo);
+
+    }
+    function clearUserModalValues() {
+        $('#id').val('');
+        $('#username').val('');
+        $('#email').val('');
+        $('#password').val('')
+        $('#annualleave').val('');
+        $('#medicalleave').val('');
+        $('#unpaidleave').val('');
+        deselectAllMultiSelectOptions();
+    }
+
+    function submitUserModal() {
+        console.log("submit user modal")
+        let token = $("meta[name='_csrf']").attr("content");
+        let header = $("meta[name='_csrf_header']").attr("content");
+        let isValidUserModal=validateUserModalValues();
+        if(isValidUserModal){
+          let userDTO = {};
+            console.log("valid form fields")
+            prepareUserDTO(userDTO);
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                url:'',
+                data: JSON.stringify(userDTO),
+                cache:false,
+                timeout:30000,
+                beforeSend:function(xhr){
+                    xhr.setRequestHeader(header,token)
+                },
+                success:function (data) {
+                        console.log(data)
+                        if (data == "success"){
+                            // bootstrapNotify('Successful created ','success')
+                             hideUserModal();
+                            window.location = ''
+                        }
+                        else {
+                            bootstrapNotify('Your email has been already exist ','danger')
+                            showUserModal();
+                        }
+
+
+                },
+                error:function (error) {
+                        console.error(error)
+                }
+            });
+          // hideUserModal();
+        }else {
+            console.error("invalid form fields")
+            bootstrapNotify('Invalid Form','danger')
+            showUserModal();
+
+
+    }
+    function bootstrapNotify(msg,type) {
+        $.notify(
+            {
+                icon:'glyphicon glyphicon-warning-sign',
+                message:msg
+            },
+            {
+                type:type,
+                delay:3000,
+                z_index:5000,
+                placement:{
+                    from:'top',
+                    align:'left'
+                }
+            }
+        );
+        setTimeout(function() {
+            $.notifyClose('top-right');
+        }, 3000);
+
+    }
+    }
+
+    function prepareUserDTO(userDTO) {
+
+        userDTO.id = $('#id').val();
+        userDTO.username = $('#username').val();
+        userDTO.password = $('#password').val();
+        userDTO.active = $('#active').val();
+        userDTO.email = $('#email').val();
+        userDTO.annualLeaveNo = $('#annualleave').val();
+        userDTO.medicalLeaveNo = $('#medicalleave').val();
+        userDTO.unpaidLeaveNo = $('#unpaidleave').val();
+        userDTO.roles = $('#roleList').val();
+    }
+
+   function validateUserModalValues(){
+      if(
+          $('#username').val()+'' != '' &&
+          $('#email').val()+'' != '' &&
+          $('#password').val()+'' != '' &&
+          $('#annualleave').val()+'' != '' &&
+          $('#medicalleave').val()+'' != '' &&
+          $('#unpaidleave').val()+'' != '' &&
+          $('#roleList').val().length > 0
+
+      ){
+          return true;
+      }else{
+          return  false;
+      }
+
+
+    }
+
+</script>
+
+</body>
+</html>

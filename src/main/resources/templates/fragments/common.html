@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+
+<head th:fragment="headerfiles">
+    <meta charset="utf-8" th:href="@{/}">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <title>Leave Application</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" >
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+
+    <link rel="stylesheet" th:href="@{/webjars/datatables/css/jquery.dataTables.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/datatables/css/dataTables.dataTables.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/datatables/css/dataTables.bootstrap4.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-multiselect/css/bootstrap-multiselect.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-datepicker/css/bootstrap-datepicker.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-datepicker/css/bootstrap-datepicker.standalone.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
+
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap-multiselect/js/bootstrap-multiselect.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap-datepicker/js/bootstrap-datepicker.min.js}"></script>
+    <script type="text/javascript" th:src="@{webjars/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/webjars/datatables/js/jquery.dataTables.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/datatables/js/dataTables.dataTables.min.js}"></script>
+
+
+
+</head>
+<body>
+
+<div class="navbar" id="navbarId" style="background-color: #6abadeba" th:fragment="header">
+    <div class="container-fluid">
+            <ul class="nav navbar-nav navbar-left">
+                <!-- for admin header-->
+                <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="#" th:href="@{/admin}">User</a></li>
+                <!-- end for admin header-->
+
+                <!-- for user header-->
+                <li sec:authorize="hasAnyAuthority('ROLE_USER')"><a href="#" th:href="@{/user/leave-transaction}">Leave Transaction</a></li>
+                <li sec:authorize="hasAnyAuthority('ROLE_USER')"><a href="#" th:href="@{/user/apply-leave}">Apply Leave</a></li>
+                <li sec:authorize="hasAnyAuthority('ROLE_USER')"><a href="#" th:href="@{/user/leave-detail}">Leave Detail</a></li>
+                <!-- end for user header-->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li  sec:authorize="isAuthenticated()" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+                            <span class="glyphicon glyphicon-user"></span>
+                            Welcome ,<span sec:authentication="name">user</span>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" id="navRightInnerId">
+                            <li><a href="#">Edit Password</a></li>
+                            <li><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout</a></li>
+                        </ul>
+                </li>
+            </ul>
+    </div>
+</div>
+
+
+</body>
+</html>

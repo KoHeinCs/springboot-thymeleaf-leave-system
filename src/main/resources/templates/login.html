@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <th:block th:include="fragments/common :: headerfiles"></th:block>
+    <style>
+        .theme_body_bg {
+            background-image: url([[@{/images/loginbg.png}]]);
+            background-size: cover;
+
+        }
+        .login {
+            width: 382px;
+            overflow: hidden;
+            padding: 80px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            margin: auto;
+            margin-top: inherit;
+
+        }
+        .user_name {
+            border-radius: 8px;
+            background-color: white;
+        }
+        .user_pass {
+            border-radius: 8px;
+            background-color: white;
+        }
+        .loginbtn {
+            border-radius: 8px;
+            margin-top: 20px;
+            background-color: yellow;
+            font-style: oblique;
+            color: blue;
+            font-size: large;
+            font-weight: 900;
+        }
+        .errorMsg {
+            font-size: large;
+            color: red;
+            font-style: italic;
+            font-family: fantasy;
+            background-color: white;
+            opacity: 10;
+            border-radius: inherit;
+        }
+        .leave_app {
+            text-align: center;
+            color: yellow;
+            font-weight: bolder;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="theme_body_bg">
+    <div  style="margin-top: 40px;">
+        <h2 class="text-center leave_app">Leave Application</h2>
+        <form th:action="@{/login}" method="post" class="login" autocomplete="off">
+            <p th:if="${loginError}"  class="text-center errorMsg"> Wrong user and password</p>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                <input type="text"  class="form-control user_name" name="username" placeholder="Email" required="required">
+            </div>
+            <div class="input-group" style="margin-top: 10px;">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                <input type="password"  name="password" class="form-control user_pass" placeholder="Password" required="required">
+            </div>
+            <div class="form-group">
+                <button type="submit"  class="btn btn-primary btn-block loginbtn">Log in</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:include="fragments/common :: headerfiles"></th:block>
+</head>
+<body>
+<header th:insert="fragments/common :: header"></header>
+<div class="container-fluid contentClass" style="padding-left: 30px;padding-right: 30px">
+    <div class="row">
+        <table id="leave_transaction_table_id" class="table table-striped table-bordered table-hover table-responsive">
+            <thead>
+            <tr>
+                <th sec:authorize="hasRole('ROLE_ADMIN')">User Name</th>
+                <th>Leave Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Mobile</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th sec:authorize="hasRole('ROLE_ADMIN')">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="leave:${leaveDetailList}">
+                <td sec:authorize="hasRole('ROLE_ADMIN')"><span th:text="${leave.userName}"></span></td>
+                <td><span th:text="${leave.leave_type}"></span></td>
+                <td><span th:text="${leave.start_date}"></span></td>
+                <td><span th:text="${leave.end_date}"></span></td>
+                <td><span th:text="${leave.mobile}"></span></td>
+                <td><span th:text="${leave.reason}"></span></td>
+                <td><span th:text="${leave.status}"></span></td>
+                <td sec:authorize="hasRole('ROLE_ADMIN')">
+                    <button class="editbtn" th:onclick="'showConfirm(\''+@{'/admin/delete/'+${leave.id}}+'\')'">Reject</button>
+                    <button class="editbtn" th:onclick="'showConfirm(\''+@{'/admin/approve/'+${leave.id}}+'\')'">Approve</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_body" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="password_form_update">
+                    <div class="form-group text-center">
+                        <div class="icon-body icon-bg">
+                            <span class=""> ! </span>
+                        </div>
+                        <h2 class="delete-text">Are you sure?</h2>
+                        <p id="role-list-tab"></p>
+                        <div class="delete-content">
+                            <div class="delete-content_text">You won't be able to revert this!</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group text-center delete-button-group ">
+                        <button class="btn btn-secondary btn-save waves-effect m-l-5"
+                                data-dismiss="modal" type="reset">
+                            Cancel
+                        </button>
+                        <button class="btn btn-primary btn-cancel waves-effect waves-light delete-button-group_button w-auto"
+                                type="button" onclick="clickComfirm()">
+                            Yes, sure !.
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var table= $('#leave_transaction_table_id').DataTable({
+           // lengthChange: false
+        });
+    });
+
+    var comfirmUrl = null;
+    function showConfirm(url){
+        comfirmUrl = url;
+        $("#delete-confirm-modal").modal("show");
+    }
+
+    function clickComfirm() {
+         $("#delete-confirm-modal").modal("hide");
+        let basePath = $('meta[charset="utf-8"]').attr('href');
+        let totalUrl = null;
+        console.log("base path "+basePath)
+        console.log("confirm url "+comfirmUrl)
+        if ( comfirmUrl.includes(basePath)){
+            // for server deployment (eg . tomcat )
+           totalUrl = basePath+comfirmUrl.replace(basePath,"");
+        }else {
+            // for spring boot
+            totalUrl = (basePath+comfirmUrl).replace("//","/");
+        }
+        window.location.href = totalUrl;
+    }
+</script>
+
+
+</body>
+</html>

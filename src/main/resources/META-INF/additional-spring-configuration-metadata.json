@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "leavesystem.",
+      "type": "java.lang.String",
+      "description": "Description for leavesystem.."
+  }
+] }

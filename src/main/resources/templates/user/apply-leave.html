@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+<!--    <th:block th:include="fragments/common :: headerfiles"></th:block>-->
+    <head th:insert="fragments/common :: headerfiles"></head>
+</head>
+<body>
+
+<header th:insert="fragments/common :: header"></header>
+<div class="container-fluid contentClass" style="padding-left: 30px;padding-right: 30px">
+    <div class="row">
+        <form action="#" th:action="@{/user/apply-leave}" method="post" th:object="${leaveDetail}">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 text-center">
+                    <div class="form-group row">
+                        <label  class="col-sm-2 col-form-label ">Leave Type</label>
+                        <div class="col-sm-10">
+                            <select  th:field="*{leave_type}" class="form-control">
+                                <option th:value="${null}">Select Leave Type</option>
+                                <option th:each="leave:${leaveTypes}" th:value="${leave}" th:text="${leave}"></option>
+                            </select>
+                            <span th:if="${#fields.hasErrors('leave_type')}" th:errors="*{leave_type}"
+                                  class="text-danger">Error</span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="startDate" class="col-sm-2 col-form-label ">Start Date</label>
+                        <div class="col-sm-10 text-center">
+                            <div class='input-group date'  >
+                                <input type='text' id='startDate' class="form-control" autocomplete="off"  th:field="*{start_date}"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <span th:if="${#fields.hasErrors('start_date')}" th:errors="*{start_date}"
+                                  class="text-danger">Error</span>
+                            <span th:if="${duplicated == true}"  class="text-danger"> start date must always smaller than end date</span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="endDate" class="col-sm-2 col-form-label ">End Date</label>
+                        <div class="col-sm-10 text-center">
+                            <div class='input-group date' >
+                                <input type='text'  id='endDate' autocomplete="off"  class="form-control" th:field="*{end_date}"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <span th:if="${#fields.hasErrors('end_date')}" th:errors="*{end_date}"
+                                  class="text-danger">Error</span>
+                            <span th:if="${duplicated == true}"  class="text-danger"> start date must always smaller than end date</span>
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="phone" class="col-sm-2 col-form-label ">Phone</label>
+                        <div class="col-sm-10 text-center">
+                            <input type="text" class="form-control" id="phone" th:field="*{mobile}">
+                            <span th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"
+                                  class="text-danger">Error</span>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label for="reason" class="col-sm-2 col-form-label ">Reason</label>
+                        <div class="col-sm-10 text-center">
+                            <textarea type="text" class="form-control" id="reason" th:field="*{reason}"></textarea>
+                            <span th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"
+                                  class="text-danger">Error</span>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-5">
+                            <button type="reset" class="btn btn-primary btn-block">Clear</button>
+                        </div>
+                        <div class="col-md-5">
+                            <button type="submit" class="btn btn-primary btn-block">Apply</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+            $('#startDate').datepicker({
+                autoclose:true,
+                todayHighlight: true,
+                daysOfWeekDisabled:[0,6],
+                title:'Start Date',
+                format: "dd/mm/yyyy",
+                clearBtn: true
+            });
+
+            $('#endDate').datepicker({
+                autoclose:true,
+                todayHighlight: true,
+                daysOfWeekDisabled:[0,6],
+                title:'End Date',
+                 format: "dd/mm/yyyy",
+                clearBtn: true
+            });
+    });
+</script>
+</body>
+</html>
